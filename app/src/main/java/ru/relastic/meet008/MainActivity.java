@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -68,9 +69,8 @@ public class MainActivity extends AppCompatActivity {
         myFragment3.getLayout().addView(mRecyclerView);
 
         Bundle args = new Bundle();
-        args.putInt(KEY_FRAGMENT_COLOR, Color.GREEN);
-        Loader<Integer> loader = getSupportLoaderManager().initLoader(LOADER_ID, args, myLoaderCallbacks);
-        loader.forceLoad();
+        args.putInt(KEY_FRAGMENT_COLOR, Color.MAGENTA);
+        getSupportLoaderManager().initLoader(LOADER_ID, args, myLoaderCallbacks);
         MyAsyncTask task = new MyAsyncTask(myHandler, textView);
         task.execute("");
         MyThread thread = new MyThread(myHandler);
@@ -135,11 +135,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onLoadFinished(@NonNull Loader<Integer> loader, Integer integer) {
             myFragment1.getLayout().setBackgroundColor(integer);
+            if (((MyLoader)loader).getColor()!=Color.GREEN) {
+                if (((MyLoader)loader).getColor()==Color.MAGENTA){
+                    ((MyLoader)loader).setColor(Color.CYAN);
+                }else {
+                    ((MyLoader)loader).setColor(Color.GREEN);
+                }
+                loader.startLoading();
+            }
         }
 
         @Override
         public void onLoaderReset(@NonNull Loader<Integer> loader) {
-
+            Log.v("LOG:", "onLoaderReset");
         }
     }
 
